@@ -10,7 +10,6 @@ def home():
 @app.get("/trending")
 def trending():
     data = get_shows()
-
     shows = []
 
     for show in data[:20]:
@@ -26,7 +25,6 @@ def trending():
 @app.get("/search/{show_name}")
 def search_show(show_name: str):
     data = get_shows()
-
     results = []
 
     for show in data:
