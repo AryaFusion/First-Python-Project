@@ -1,30 +1,24 @@
-from flask import Flask, request, jsonify
-from database import init_db, save_search, get_recent_searches, get_most_searched
+from fastapi import FastAPI
+from tvmaze_service import get_shows
 
-app = Flask(__name__)
-init_db()
+app = FastAPI()
 
-@app.route("/search", methods=["POST"])
-def search_show():
-    data = request.json
-    show_name = data.get("show_name")
+@app.get("/")
+def home():
+    return {"message": "OTT Trend Tracker"}
 
-    if not show_name:
-        return jsonify({"error": "show_name required"}), 400
+@app.get("/trending")
+def trending():
+    data = get_shows()
 
-    save_search(show_name)
-    return jsonify({"message": f"{show_name} saved successfully"})
+    shows = []
 
+    for show in data[:20]:
+        shows.append({
+            "name": show["name"],
+            "rating": show["rating"]["average"],
+            "genres": show["genres"],
+            "image": show["image"]["medium"] if show["image"] else None
+        })
 
-@app.route("/analytics/most-searched", methods=["GET"])
-def most_searched():
-    return jsonify(get_most_searched())
-
-
-@app.route("/analytics/recent-searches", methods=["GET"])
-def recent_searches():
-    return jsonify(get_recent_searches())
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
+    return shows
