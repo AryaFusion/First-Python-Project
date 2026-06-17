@@ -59,4 +59,4 @@ if __name__ == "__main__":
 
     print("Recent Searches:")
     for search in get_recent_searches():
-        print(search)
+        print(search) 
