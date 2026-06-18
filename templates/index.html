@@ -3,456 +3,320 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OTT Trend Tracker</title>
+    <title>SCREENPULSE | OTT Trend Tracker</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 
-    <!-- NAVBAR -->
-    <nav class="navbar">
-        <div class="logo">
-            <span class="logo-icon">🎬</span>
-            <span>OTT Trend Tracker</span>
-        </div>
+<div class="app">
 
-        <div class="nav-links">
-            <a href="#home">Home</a>
-            <a href="#trending">Trending</a>
-            <a href="#top-rated">Top Rated</a>
-            <a href="#recent">Recent Searches</a>
-            <a href="#about">About</a>
-        </div>
+    <aside class="sidebar">
+        <button class="side-logo" onclick="toggleTheme()">▶</button>
 
-        <button class="theme-btn" onclick="toggleTheme()">☀️</button>
-    </nav>
+        <a href="#home" class="side-link active">⌂</a>
+        <button class="side-link" onclick="focusSearch()">⌕</button>
+        <a href="#trending" class="side-link">▦</a>
+        <button class="side-link" onclick="showLikedMessage()">♡</button>
 
-    <!-- HERO SECTION -->
-    <section id="home" class="hero">
-        <div class="hero-glow"></div>
+        <button class="side-bottom" onclick="alert('SCREENPULSE | OTT Trend Tracker')">⚙</button>
+    </aside>
 
-        <div class="hero-content">
-            <span class="badge">Python FastAPI Capstone Project</span>
+    <main class="main">
 
-            <h1>Discover Trending OTT Shows Instantly</h1>
+        <nav class="navbar">
+            <div class="brand">
+                <span class="brand-icon">▶</span>
+                <div>
+                    <h2>SCREENPULSE</h2>
+                    <p>OTT Trend Tracker</p>
+                </div>
+            </div>
 
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#trending">Trending</a>
+                <a href="#about">About</a>
+            </div>
+
+            <div class="nav-search">
+                <input type="text" id="searchInput" placeholder="Search shows..." onkeydown="handleEnter(event)">
+                <button onclick="searchShows()">⌕</button>
+            </div>
+        </nav>
+
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <span class="tag">Trending Now</span>
+                <h1>Money Heist</h1>
+                <p>
+                    A criminal mastermind brings together a group of skilled individuals
+                    to carry out one of the most daring heists ever planned.
+                </p>
+
+                <div class="hero-meta">
+                    <span>⭐ 8.2</span>
+                    <span>Crime</span>
+                    <span>Drama</span>
+                    <span>Thriller</span>
+                </div>
+
+                <div class="hero-actions">
+                    <button onclick="searchSpecific('Money Heist')" class="primary-btn">View Details</button>
+                    <a href="#trending" class="secondary-btn">Explore Shows</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="trending" class="content-section">
+            <div class="section-head">
+                <div>
+                    <h2>Trending Now</h2>
+                    <p>Explore popular and binge-worthy shows</p>
+                </div>
+                <button onclick="loadTrending()" class="refresh-btn">Refresh</button>
+            </div>
+
+            <div id="filters" class="filters"></div>
+
+            <div id="showsContainer" class="cards">
+                <p class="loading">Loading shows...</p>
+            </div>
+        </section>
+
+        <section id="about" class="about">
+            <h2>About Project</h2>
             <p>
-                Explore trending, top-rated and binge-worthy web series with real-time data,
-                clean visuals and a premium OTT-style experience.
+                SCREENPULSE is a Python FastAPI based OTT trend tracker that fetches
+                live TV show data, displays trending shows, supports search, filters
+                genres, and shows detailed information using the TVMaze API.
             </p>
 
-            <div class="search-box">
-                <input 
-                    type="text" 
-                    id="searchInput" 
-                    placeholder="Search shows like Dark, Arrow, Under..."
-                    onkeydown="handleEnter(event)"
-                >
-                <button onclick="searchShows()">Search</button>
+            <div class="team">
+                <span>Arya - Backend & Integration</span>
+                <span>Aaditi - UI Design</span>
+                <span>Shaurya - Database</span>
             </div>
+        </section>
 
-            <div class="hero-buttons">
-                <a href="#trending" class="primary-btn">Explore Shows</a>
-                <a href="#about" class="secondary-btn">About Project</a>
-            </div>
-        </div>
-    </section>
+    </main>
 
-    <!-- STATS -->
-    <section class="stats-section">
-        <div class="stat-card">
-            <h3 id="totalShows">0</h3>
-            <p>Shows Loaded</p>
-        </div>
+</div>
 
-        <div class="stat-card">
-            <h3 id="avgRating">0</h3>
-            <p>Average Rating</p>
-        </div>
+<div id="modal" class="modal">
+    <div class="modal-box">
+        <button onclick="closeModal()" class="close">×</button>
 
-        <div class="stat-card">
-            <h3>FastAPI</h3>
-            <p>Python Backend</p>
-        </div>
+        <div class="modal-grid">
+            <img id="modalImage" src="" alt="Poster">
 
-        <div class="stat-card">
-            <h3>TVMaze</h3>
-            <p>API Source</p>
-        </div>
-    </section>
-
-    <!-- TRENDING SHOWS -->
-    <section id="trending" class="section">
-        <div class="section-header">
-            <div>
-                <span class="section-tag">Live Data</span>
-                <h2>🔥 Trending Shows</h2>
-            </div>
-
-            <button class="small-btn" onclick="loadTrendingShows()">Refresh</button>
-        </div>
-
-        <div id="genreFilters" class="filter-container"></div>
-
-        <div id="showsContainer" class="cards-container">
-            <p class="loading">Loading trending shows...</p>
-        </div>
-    </section>
-
-    <!-- TOP RATED -->
-    <section id="top-rated" class="section alt-section">
-        <div class="section-header">
-            <div>
-                <span class="section-tag">Recommended</span>
-                <h2>⭐ Top Rated Picks</h2>
-            </div>
-        </div>
-
-        <div id="topRatedContainer" class="cards-container"></div>
-    </section>
-
-    <!-- RECENT SEARCHES -->
-    <section id="recent" class="section">
-        <div class="section-header">
-            <div>
-                <span class="section-tag">Your Activity</span>
-                <h2>🕒 Recent Searches</h2>
-            </div>
-
-            <button class="small-btn danger" onclick="clearRecentSearches()">Clear</button>
-        </div>
-
-        <div id="recentSearches" class="recent-box">
-            <p class="muted">No recent searches yet.</p>
-        </div>
-    </section>
-
-    <!-- ABOUT -->
-    <section id="about" class="about-section">
-        <div class="about-card">
-            <span class="section-tag">Project Overview</span>
-            <h2>About OTT Trend Tracker</h2>
-
-            <p>
-                OTT Trend Tracker is a Python-based capstone project that helps users discover
-                trending and top-rated web series. It uses a FastAPI backend, TVMaze API for show data,
-                and a clean frontend interface for a premium user experience.
-            </p>
-
-            <div class="tech-stack">
-                <span>Python</span>
-                <span>FastAPI</span>
-                <span>TVMaze API</span>
-                <span>HTML</span>
-                <span>CSS</span>
-                <span>JavaScript</span>
-                <span>SQLite</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- MODAL -->
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <button class="close-btn" onclick="closeModal()">×</button>
-            <img id="modalImage" src="" alt="Show Poster">
             <div class="modal-info">
                 <h2 id="modalTitle"></h2>
-                <p id="modalRating"></p>
+                <p id="modalMeta"></p>
                 <p id="modalGenres"></p>
-                <p class="modal-desc">
-                    This show is part of the OTT Trend Tracker recommendation list.
-                    Search and explore more trending shows using the dashboard.
-                </p>
+                <p id="modalSummary"></p>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- FOOTER -->
-    <footer>
-        <h3>OTT Trend Tracker</h3>
-        <p>Made by Arya • Aaditi • Shaurya</p>
-        <p class="footer-small">Python Capstone Project</p>
-    </footer>
+<script>
+let allShows = [];
 
-    <button id="backToTop" onclick="scrollToTop()">↑</button>
+async function loadTrending() {
+    const container = document.getElementById("showsContainer");
+    container.innerHTML = "<p class='loading'>Loading shows...</p>";
 
-    <script>
-        let allShows = [];
+    try {
+        const res = await fetch("/trending");
+        const shows = await res.json();
 
-        async function loadTrendingShows() {
-            const container = document.getElementById("showsContainer");
-            container.innerHTML = createSkeletonCards();
+        allShows = shows;
+        displayShows(shows);
+        createFilters(shows);
+        updateHero(shows[0]);
+    } catch (error) {
+        container.innerHTML = "<p class='error'>Unable to load shows. Check backend server.</p>";
+    }
+}
 
-            try {
-                const response = await fetch("/trending");
-                const shows = await response.json();
+async function searchShows() {
+    const query = document.getElementById("searchInput").value.trim();
 
-                allShows = shows;
-                displayShows(shows, "showsContainer");
-                displayTopRated(shows);
-                createGenreFilters(shows);
-                updateStats(shows);
-                loadRecentSearches();
+    if (query === "") {
+        loadTrending();
+        return;
+    }
 
-            } catch (error) {
-                container.innerHTML = `
-                    <div class="error-box">
-                        <h3>Unable to load shows</h3>
-                        <p>Please check if FastAPI server is running.</p>
-                    </div>
-                `;
-            }
+    const container = document.getElementById("showsContainer");
+    container.innerHTML = "<p class='loading'>Searching...</p>";
+
+    try {
+        const res = await fetch("/search/" + encodeURIComponent(query));
+        const shows = await res.json();
+
+        allShows = shows;
+        displayShows(shows);
+        createFilters(shows);
+
+        if (shows.length > 0) {
+            updateHero(shows[0]);
         }
 
-        async function searchShows() {
-            const input = document.getElementById("searchInput");
-            const query = input.value.trim();
-            const container = document.getElementById("showsContainer");
-
-            if (query === "") {
-                loadTrendingShows();
-                return;
-            }
-
-            container.innerHTML = createSkeletonCards();
-            saveRecentSearch(query);
-
-            try {
-                const response = await fetch(`/search/${encodeURIComponent(query)}`);
-                const shows = await response.json();
-
-                if (!shows || shows.length === 0) {
-                    container.innerHTML = `
-                        <div class="error-box">
-                            <h3>No shows found</h3>
-                            <p>Try searching something else like Dark, Arrow or Under.</p>
-                        </div>
-                    `;
-                    loadRecentSearches();
-                    return;
-                }
-
-                displayShows(shows, "showsContainer");
-                loadRecentSearches();
-
-                document.getElementById("trending").scrollIntoView({
-                    behavior: "smooth"
-                });
-
-            } catch (error) {
-                container.innerHTML = `
-                    <div class="error-box">
-                        <h3>Search failed</h3>
-                        <p>Please check backend connection.</p>
-                    </div>
-                `;
-            }
-        }
-
-        function displayShows(shows, containerId) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = "";
-
-            shows.forEach(show => {
-                const image = show.image || "https://via.placeholder.com/300x430/111827/00e5ff?text=No+Image";
-                const rating = show.rating || "N/A";
-                const genres = show.genres && show.genres.length > 0 ? show.genres.join(" • ") : "Drama";
-
-                const card = document.createElement("div");
-                card.className = "card";
-
-                card.innerHTML = `
-                    <div class="poster-wrapper">
-                        <img src="${image}" alt="${show.name}">
-                        <span class="rating-badge">⭐ ${rating}</span>
-                    </div>
-
-                    <div class="card-content">
-                        <h3>${show.name}</h3>
-                        <p>${genres}</p>
-                        <button onclick='openModal(${JSON.stringify(show)})'>View Details</button>
-                    </div>
-                `;
-
-                container.appendChild(card);
-            });
-        }
-
-        function displayTopRated(shows) {
-            const topRated = [...shows]
-                .sort((a, b) => (b.rating || 0) - (a.rating || 0))
-                .slice(0, 8);
-
-            displayShows(topRated, "topRatedContainer");
-        }
-
-        function createGenreFilters(shows) {
-            const filterContainer = document.getElementById("genreFilters");
-            let genres = [];
-
-            shows.forEach(show => {
-                if (show.genres) {
-                    genres.push(...show.genres);
-                }
-            });
-
-            genres = [...new Set(genres)].slice(0, 8);
-
-            filterContainer.innerHTML = `
-                <button class="filter-btn active" onclick="filterShows('All', this)">All</button>
-            `;
-
-            genres.forEach(genre => {
-                filterContainer.innerHTML += `
-                    <button class="filter-btn" onclick="filterShows('${genre}', this)">${genre}</button>
-                `;
-            });
-        }
-
-        function filterShows(genre, button) {
-            document.querySelectorAll(".filter-btn").forEach(btn => {
-                btn.classList.remove("active");
-            });
-
-            button.classList.add("active");
-
-            if (genre === "All") {
-                displayShows(allShows, "showsContainer");
-                return;
-            }
-
-            const filtered = allShows.filter(show => {
-                return show.genres && show.genres.includes(genre);
-            });
-
-            displayShows(filtered, "showsContainer");
-        }
-
-        function updateStats(shows) {
-            document.getElementById("totalShows").innerText = shows.length;
-
-            const ratings = shows
-                .map(show => show.rating)
-                .filter(rating => rating !== null && rating !== undefined);
-
-            const avg = ratings.length
-                ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1)
-                : "N/A";
-
-            document.getElementById("avgRating").innerText = avg;
-        }
-
-        function openModal(show) {
-            document.getElementById("modalImage").src =
-                show.image || "https://via.placeholder.com/300x430/111827/00e5ff?text=No+Image";
-
-            document.getElementById("modalTitle").innerText = show.name;
-            document.getElementById("modalRating").innerText = "⭐ Rating: " + (show.rating || "N/A");
-            document.getElementById("modalGenres").innerText =
-                "Genres: " + (show.genres && show.genres.length ? show.genres.join(", ") : "Not available");
-
-            document.getElementById("modal").style.display = "flex";
-        }
-
-        function closeModal() {
-            document.getElementById("modal").style.display = "none";
-        }
-
-        function saveRecentSearch(query) {
-            let searches = JSON.parse(localStorage.getItem("recentSearches")) || [];
-
-            searches = searches.filter(item => item.toLowerCase() !== query.toLowerCase());
-            searches.unshift(query);
-
-            if (searches.length > 6) {
-                searches.pop();
-            }
-
-            localStorage.setItem("recentSearches", JSON.stringify(searches));
-        }
-
-        function loadRecentSearches() {
-            const container = document.getElementById("recentSearches");
-            const searches = JSON.parse(localStorage.getItem("recentSearches")) || [];
-
-            if (searches.length === 0) {
-                container.innerHTML = `<p class="muted">No recent searches yet.</p>`;
-                return;
-            }
-
-            container.innerHTML = "";
-
-            searches.forEach(search => {
-                const item = document.createElement("button");
-                item.className = "recent-item";
-                item.innerText = search;
-                item.onclick = function () {
-                    document.getElementById("searchInput").value = search;
-                    searchShows();
-                };
-
-                container.appendChild(item);
-            });
-        }
-
-        function clearRecentSearches() {
-            localStorage.removeItem("recentSearches");
-            loadRecentSearches();
-        }
-
-        function createSkeletonCards() {
-            let skeletons = "";
-
-            for (let i = 0; i < 8; i++) {
-                skeletons += `
-                    <div class="skeleton-card">
-                        <div class="skeleton-img"></div>
-                        <div class="skeleton-line"></div>
-                        <div class="skeleton-small"></div>
-                    </div>
-                `;
-            }
-
-            return skeletons;
-        }
-
-        function handleEnter(event) {
-            if (event.key === "Enter") {
-                searchShows();
-            }
-        }
-
-        function toggleTheme() {
-            document.body.classList.toggle("light-theme");
-        }
-
-        function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-            });
-        }
-
-        window.addEventListener("scroll", function () {
-            const btn = document.getElementById("backToTop");
-
-            if (window.scrollY > 400) {
-                btn.style.display = "block";
-            } else {
-                btn.style.display = "none";
-            }
+        document.getElementById("trending").scrollIntoView({
+            behavior: "smooth"
         });
+    } catch (error) {
+        container.innerHTML = "<p class='error'>Search failed.</p>";
+    }
+}
 
-        window.onclick = function (event) {
-            const modal = document.getElementById("modal");
+async function searchSpecific(name) {
+    document.getElementById("searchInput").value = name;
+    await searchShows();
+}
 
-            if (event.target === modal) {
-                closeModal();
-            }
+function updateHero(show) {
+    if (!show) return;
+
+    document.querySelector(".hero h1").innerText = show.name;
+    document.querySelector(".hero p").innerText =
+        show.summary || "Explore one of the most popular shows on SCREENPULSE.";
+
+    document.querySelector(".hero").style.background = `
+        linear-gradient(90deg, rgba(11,17,29,0.95), rgba(11,17,29,0.55)),
+        url("${show.original_image || show.image}")
+    `;
+
+    document.querySelector(".hero").style.backgroundSize = "cover";
+    document.querySelector(".hero").style.backgroundPosition = "center";
+
+    const genres = show.genres && show.genres.length ? show.genres.slice(0, 3) : ["Drama"];
+    document.querySelector(".hero-meta").innerHTML = `
+        <span>⭐ ${show.rating || "N/A"}</span>
+        ${genres.map(g => `<span>${g}</span>`).join("")}
+    `;
+}
+
+function displayShows(shows) {
+    const container = document.getElementById("showsContainer");
+    container.innerHTML = "";
+
+    if (!shows || shows.length === 0) {
+        container.innerHTML = "<p class='error'>No shows found.</p>";
+        return;
+    }
+
+    shows.forEach(show => {
+        const safeShow = JSON.stringify(show).replace(/'/g, "&#39;");
+
+        container.innerHTML += `
+            <div class="card">
+                <div class="poster">
+                    <img src="${show.image || 'https://via.placeholder.com/300x430/111827/ffffff?text=No+Image'}" alt="${show.name}">
+                    <span class="rating">⭐ ${show.rating || "N/A"}</span>
+                </div>
+
+                <div class="card-body">
+                    <h3>${show.name}</h3>
+                    <p>${show.genres && show.genres.length ? show.genres.join(" • ") : "Genre not available"}</p>
+                    <button onclick='openModal(${safeShow})'>View Details</button>
+                </div>
+            </div>
+        `;
+    });
+}
+
+function createFilters(shows) {
+    let genres = [];
+
+    shows.forEach(show => {
+        if (show.genres) {
+            genres.push(...show.genres);
         }
+    });
 
-        loadTrendingShows();
-    </script>
+    genres = [...new Set(genres)].slice(0, 8);
+
+    const filterBox = document.getElementById("filters");
+    filterBox.innerHTML = `<button class="filter active" onclick="showAllFilters(this)">All</button>`;
+
+    genres.forEach(genre => {
+        filterBox.innerHTML += `
+            <button class="filter" onclick="filterShows('${genre}', this)">${genre}</button>
+        `;
+    });
+}
+
+function showAllFilters(button) {
+    document.querySelectorAll(".filter").forEach(btn => btn.classList.remove("active"));
+    button.classList.add("active");
+    displayShows(allShows);
+}
+
+function filterShows(genre, button) {
+    document.querySelectorAll(".filter").forEach(btn => btn.classList.remove("active"));
+    button.classList.add("active");
+
+    const filtered = allShows.filter(show => show.genres && show.genres.includes(genre));
+    displayShows(filtered);
+}
+
+function openModal(show) {
+    document.getElementById("modalImage").src =
+        show.image || "https://via.placeholder.com/300x430/111827/ffffff?text=No+Image";
+
+    document.getElementById("modalTitle").innerText = show.name;
+
+    document.getElementById("modalMeta").innerHTML = `
+        <b>Type:</b> ${show.type || "TV Show"} &nbsp; | &nbsp;
+        <b>Language:</b> ${show.language || "Unknown"} &nbsp; | &nbsp;
+        <b>Status:</b> ${show.status || "Unknown"} &nbsp; | &nbsp;
+        <b>Premiered:</b> ${show.premiered || "Unknown"} &nbsp; | &nbsp;
+        <b>Rating:</b> ${show.rating || "N/A"}
+    `;
+
+    document.getElementById("modalGenres").innerText =
+        "Genres: " + (show.genres && show.genres.length ? show.genres.join(", ") : "Not available");
+
+    document.getElementById("modalSummary").innerText =
+        show.summary || "No description available.";
+
+    document.getElementById("modal").style.display = "flex";
+}
+
+function closeModal() {
+    document.getElementById("modal").style.display = "none";
+}
+
+function handleEnter(event) {
+    if (event.key === "Enter") {
+        searchShows();
+    }
+}
+
+function toggleTheme() {
+    document.body.classList.toggle("light-theme");
+}
+
+function focusSearch() {
+    document.getElementById("searchInput").focus();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function showLikedMessage() {
+    alert("Watchlist feature can be added in future scope.");
+}
+
+window.onclick = function(event) {
+    const modal = document.getElementById("modal");
+
+    if (event.target === modal) {
+        closeModal();
+    }
+}
+
+loadTrending();
+</script>
 
 </body>
 </html>

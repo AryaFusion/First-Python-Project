@@ -44,7 +44,6 @@ def get_recent_searches(limit=5):
     """, (limit,))
 
     data = cursor.fetchall()
-
     conn.close()
 
     return data
@@ -52,11 +51,4 @@ def get_recent_searches(limit=5):
 
 if __name__ == "__main__":
     create_database()
-
-    # Testing
-    save_search("Dark")
-    save_search("Wednesday")
-
-    print("Recent Searches:")
-    for search in get_recent_searches():
-        print(search) 
+    print("Database created successfully")
